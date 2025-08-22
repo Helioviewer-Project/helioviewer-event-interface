@@ -14,6 +14,7 @@ use GuzzleHttp\Client;
  * IF YOU EDIT THIS CLASS, YOU MUST UPDATE docs/datasources.md
  */
 abstract class DataSource {
+    public string $pin;
     /** Name of where the data is coming from */
     public string $source;
     /** Name of data product */
@@ -89,6 +90,14 @@ abstract class DataSource {
         }
 
         return "HelioviewerEventInterface\\Translator\\$this->translator::Transform"($data, $obstime);
+    }
+
+    /**
+     * Returns the translator class name for this data source
+     * @return string
+     */
+    public function getTranslator(): string {
+        return $this->translator;
     }
 
 }

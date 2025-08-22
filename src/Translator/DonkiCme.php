@@ -293,6 +293,33 @@ class DonkiCme {
         return $text;
     }
 
+    public static function buildTranslatedCME(array $record): array {
+        try {
+            return TranslateCME($record);
+        } catch (IgnoreCme $e) {
+            // Create the event with null coordinates when location can't be determined
+            $start = new DateTimeImmutable($record['startTime']);
+            $end = $start->add(new DateInterval("P1D"));
+            
+            $event = new HelioviewerEvent();
+            $event->id      = $record['activityID'];
+            $event->label   = "CME " . $record['activityID'];
+            $event->short_label = "CME";
+            $event->version = $record['catalog'] ?? null;
+            $event->type    = 'CE';
+            $event->start   = $start->format('Y-m-d H:i:s');
+            $event->end     = $end->format('Y-m-d H:i:s');
+            $event->link    = new EventLink("DONKI", "https://kauai.ccmc.gsfc.nasa.gov/DONKI/view/CME/" . $record['activityID']);
+            $event->views   = [];
+            // Set coordinates to null when location is unknown
+            // $event->hv_hpc_x = null;
+            // $event->hv_hpc_y = null;
+            
+            $event->source = $record;
+            return (array) $event;
+        }
+    }
+
     public static function Translate(array $data, mixed $extra): array {
         $groups = [
             [
