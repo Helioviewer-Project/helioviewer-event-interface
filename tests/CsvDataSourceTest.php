@@ -14,7 +14,7 @@ final class CsvDataSourceTest extends TestCase
         return new CsvDataSource(
             "RHESSI",
             "Flare List",
-            "https://hesperia.gsfc.nasa.gov/~kim/rhessi_helioviewer/rhessi_flares_helioviewer.txt",
+            "https://hesperia.gsfc.nasa.gov/hessidata/dbase/hessi_flare_list.txt",
             $translator,
             ["offset" => 687]
         );
