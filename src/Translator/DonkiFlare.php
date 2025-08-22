@@ -119,6 +119,24 @@ class DonkiFlare {
         ];
     }
 
+    public static function makeEventFromRawFlare(array $flare): array {
+        $flare = new self($flare);
+        $event = new HelioviewerEvent();
+        $event->id = $flare->id();
+        $event->label = $flare->label();
+        $event->short_label   = $flare->shortLabel();
+        $event->version = '';
+        $event->type = 'FL';
+        $event->start = $flare->start();
+        $event->end = $flare->end();
+        $event->source = $flare->flare;
+        $event->views = $flare->views();
+        $event->link = $flare->link();
+        $res = (array) $event;
+        $res['peak'] = $flare->peak();
+        return $res;
+    }
+
 
     public static function Translate(array $flares, mixed $extra): array {
         $groups = [
@@ -131,19 +149,8 @@ class DonkiFlare {
         ];
         $data = &$groups[0]['data'];
         foreach ($flares as $flare) {
-            $flare = new self($flare);
-            $event = new HelioviewerEvent();
-            $event->id = $flare->id();
-            $event->label = $flare->label();
-            $event->short_label   = $flare->shortLabel();
-            $event->version = '';
-            $event->type = 'FL';
-            $event->start = $flare->start();
-            $event->end = $flare->end();
-            $event->source = $flare->flare;
-            $event->views = $flare->views();
-            $event->link = $flare->link();
-            array_push($data, (array) $event);
+            $event = self::makeEventFromRawFlare($flare);
+            array_push($data, $event);
         }
         return $groups;
     }
