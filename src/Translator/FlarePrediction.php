@@ -74,7 +74,7 @@ class FlarePrediction {
             // coordinates. In this case, we are going to drop these values
             // from the list.
             $group['data'] = array_values(array_filter($group['data'], function ($event) {
-                return LocationParser::IsValidLatitudeLongitude(GetLatitude($event['source']), GetLongitude($event['source']));
+                return GetTime($event['source']) !== "-1" && LocationParser::IsValidLatitudeLongitude(GetLatitude($event['source']), GetLongitude($event['source']));
             }));
             foreach ($group['data'] as &$event) {
                 // event:
@@ -183,11 +183,11 @@ function GetProbablity(HapiRecord $prediction, string $flare_class): ?string {
 }
 
 function GetLatitude(mixed $prediction): mixed {
-    return $prediction['NOAALatitude'] ?? $prediction['CataniaLatitude'] ?? $prediction['ModelLatitude'];
+    return floatval($prediction['NOAALatitude'] ?? $prediction['CataniaLatitude'] ?? $prediction['ModelLatitude']);
 }
 
 function GetLongitude(mixed $prediction): mixed {
-    return $prediction['NOAALongitude'] ?? $prediction['CataniaLongitude'] ?? $prediction['ModelLongitude'];
+    return floatval($prediction['NOAALongitude'] ?? $prediction['CataniaLongitude'] ?? $prediction['ModelLongitude']);
 }
 
 function GetTime(mixed $prediction): mixed {
