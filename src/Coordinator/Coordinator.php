@@ -19,7 +19,18 @@ class Coordinator {
      */
     private static function Get(string $url) {
         if (is_null(Coordinator::$client)) {
-            Coordinator::$client = new Client();
+            $options = [
+                'timeout' => 10.0,
+                'connect_timeout' => 5.0
+            ];
+            if (defined('HV_PROXY_HOST')) {
+                $options['proxy'] = [
+                    'http'  => HV_PROXY_HOST,
+                    'https' => HV_PROXY_HOST,
+                    'no'    => ['127.0.0.1', 'localhost']
+                ];
+            }
+            Coordinator::$client = new Client($options);
         }
         $response = Coordinator::$client->request('GET', $url);
         return $response->getBody()->getContents();

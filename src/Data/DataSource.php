@@ -59,10 +59,15 @@ abstract class DataSource {
 
     protected static function GetClient(): Client {
         if (is_null(self::$HttpClient)) {
-            self::$HttpClient = new Client([
+            $options = [
                 // Timeout at 10 seconds.
-                'timeout' => 10.0
-            ]);
+                'timeout' => 10.0,
+                'connect_timeout' => 5.0
+            ];
+            if (defined('HV_PROXY_HOST')) {
+                $options['proxy'] = HV_PROXY_HOST;
+            }
+            self::$HttpClient = new Client($options);
         }
         return self::$HttpClient;
     }

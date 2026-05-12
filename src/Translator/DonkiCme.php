@@ -343,7 +343,14 @@ class DonkiCme {
  * Queries the given DONKI Model URL and returns all gif urls found on the page.
  */
 function GetGifsFromDonkiWebPage(string $url): array {
-    $client = new \GuzzleHttp\Client([]);
+    $options = [
+        'timeout' => 10.0,
+        'connect_timeout' => 5.0
+    ];
+    if (defined('HV_PROXY_HOST')) {
+        $options['proxy'] = HV_PROXY_HOST;
+    }
+    $client = new \GuzzleHttp\Client($options);
     $response = $client->get($url);
     $page = $response->getBody()->getContents();
     preg_match_all('/\bhttps?:\/\/\S+?\.gif\b/i', $page, $gifs);
